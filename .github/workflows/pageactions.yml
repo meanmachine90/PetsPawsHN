@@ -16,7 +16,6 @@ env:
 concurrency:
     group: "pages"
     cancel-in-progress: false
-    
 jobs:
  deploy:
   environment:
@@ -25,32 +24,34 @@ jobs:
 
   runs-on: ubuntu-latest
 
+  steps:
+   - name: Checkout
+     uses: actions/checkout@v4
 
-steps:
-    -name: Checkout
-    uses: actions/checkout@v4
+   - name: Setup NodeJS
+     uses: actions/setup-node@v4
+     with:
+      node-version: '20'
+      cache: 'npm'
 
-    -name: setup nodeJS
-    uses: action/setup-node@v4
-    with:
-        node-version: '20'
-        cache: 'npm'
-    
-    -name: install dependencies
-    run: npm install
+   - name: Instalar las Dependencias
+     run: npm install
 
-    -name: verify ambient variables
-    run: echo "DEPLOY_BASE_URL=${{ env.DEPLOY_BASE_URL}}"
+   - name: verificar las variables de ambient
+     run: echo "DEPLOY_BASE_URL=${{ env.DEPLOY_BASE_URL }}"
 
-    -name: compile
-    run: npm run build
+   - name: Compilar
+     run: npm run build
 
-    -name: setup git-hubpages
-    run: actions/configure-pages-artifact@v3
-    with:
-        path: './dist'
+   - name: Configurar Github Pages
+     uses: actions/configure-pages@v5
 
-    -name: publish
-    run: echo "publicado"
-    id: deployment
-    uses: actions/deploy-pages@v4
+   - name: Subir Compilacion a GitHub Pages
+     uses: actions/upload-pages-artifact@v3
+     with:
+      path: './dist'
+
+   - name: Publicar
+     id: deployment
+     uses: actions/deploy-pages@v4
+
